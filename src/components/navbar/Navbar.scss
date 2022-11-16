@@ -1,0 +1,31 @@
+@import '../../style.scss';
+.navbar{
+    background-color: $lightBlack;
+    font-family: $josefinaSans;
+    .navbar--container{
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 200px;
+        align-items: center;
+
+        .navbar-logo--container{
+
+            .navbar-logo{
+                width: 80px;
+            }
+        }
+
+        .navbar-link--container{
+            width: 250px;
+            display: flex;
+            justify-content: space-between;
+            .navbar-link{
+                color: $otherWhite;
+                font-size: $fontSize-s;
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
