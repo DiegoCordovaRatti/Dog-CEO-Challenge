@@ -1,9 +1,12 @@
-import './App.css';
+import React from "react";
+import { RouterProvider } from "react-router-dom";
+import { routes } from "./routes/routes";
+import './style.scss'
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      
+      <RouterProvider router={routes}/>
     </div>
   );
 }
