@@ -1,0 +1,16 @@
+.modal{
+
+    .carousel--container{
+        .carousel-img--container{
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            .carousel-img{
+                object-fit:contain;
+                object-position: center;
+                height: 70vh;
+                width: 100%;
+            }
+        }
+    }
+}

@@ -13,7 +13,6 @@ const Navbar = () => {
         <div className='navbar-link--container'>
           <Link className='link navbar-link' to={'/'}>HOME</Link>
           <Link className='link navbar-link' to={'/list'}>LIST</Link>
-          <Link className='link navbar-link' to={'/search'}>SEARCH</Link>
         </div>
       </div>
     </div>
