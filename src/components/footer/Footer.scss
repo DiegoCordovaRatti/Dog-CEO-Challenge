@@ -1,0 +1,18 @@
+@import '../../style.scss';
+
+.footer{
+    background-color: $lightBlack;
+    font-family: $josefinaSans;
+    .footer--container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+
+        .footer-logo--container{
+            .footer-logo{
+                width: 80px;
+            }
+        }
+    }
+}
