@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, Carousel, Skeleton } from 'antd';
+import React from 'react';
+import { Modal, Carousel, Skeleton } from 'antd';
 import './Modal.scss'
 
 
 const App = (props) => {  
-  const images = props.breedImages.map(image =>
-    <div className='carousel-img--container'>
-      <img className='carousel-img' src={image} alt="" />
+  const images = props.breedImages.map((image, i) =>
+    <div key={i} className='carousel-img--container'>
+      <img key={i} className='carousel-img' src={image} alt="" />
     </div>
   )
   return (
