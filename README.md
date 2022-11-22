@@ -1,6 +1,4 @@
-# Ticket Service
-
-Use CRUD to create service tickets
+# Dog CEO Challenge
 
 ## Functionalities
 -  [x]  Search dog breeds
