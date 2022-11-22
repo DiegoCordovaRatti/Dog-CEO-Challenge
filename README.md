@@ -6,7 +6,6 @@
 -  [x]  Display every breeds and sub breeds images
 
 ## Future functionalities
--  [x]  Detailed testing
 -  [x]  Search bar
 -  [x]  Random dogs info
 
