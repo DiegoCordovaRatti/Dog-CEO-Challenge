@@ -12,7 +12,6 @@
     .table{
         .tag--container{
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
         }
     }
 }
@@ -35,6 +34,9 @@
                 
                 max-height: 70vh;
                 overflow: scroll;
+                .tag{
+                    grid-template-columns: repeat(1, 1fr);
+                }
                 .ant-table-thead .ant-table-cell {
                     background-color: #e0dfdfa9;
                 }
@@ -75,6 +77,9 @@
                 max-height: 80vh;
                 overflow: scroll;
                 background-color: $white;
+                .tag{
+                    grid-template-columns: repeat(1, 1fr);
+                }
             }
         }
     }
