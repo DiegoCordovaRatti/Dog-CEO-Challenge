@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import { Table, Space, Tag, Checkbox } from 'antd';
-import axios from 'axios';
 import Modal from '../../components/modal/Modal'
 import './List.scss'
 
@@ -9,57 +8,74 @@ const BreedList = () => {
   const [breedsAPI, setBreedsAPI] = useState({});
   const [breedsApiArray, setBreedsApiArray] = useState([]);
   const [breedCollection, setBreedCollection] = useState([]);
-  const [selectedBreed, setSelectedBreed] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [breedImages, setBreedImages] = useState([]);
   const [filterBreedApi, setFilterBreedApi] = useState([]);
+  const [selectedBreed, setSelectedBreed] = useState(null);
+  const [breedImages, setBreedImages] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   
   // API call & asign the response to a state variable
   useEffect(() => {
-    axios.get("https://dog.ceo/api/breeds/list/all")
-    .then((res) => {
-      setBreedsAPI(res.data.message);
-    }).catch((err) => {
-      console.log(err);
-    });
+    const fetchApiCall = async() =>{
+      const { message } = await fetch('https://dog.ceo/api/breeds/list/all').then(response => response.json());
+      setBreedsAPI(message)
+    }
+    fetchApiCall()
   }, []);
   
-  // create new array to fill the table
   useEffect(() => {
-    setBreedCollection(()=>{
-      let breedsArray = [];
+    setBreedsApiArray(()=>{
       let breeds = []
       for(const key in breedsAPI) {
         breeds.push({
         breed: key,
         subBreeds: breedsAPI[key].length ? breedsAPI[key] : []
         })
-        const hasSubBreed = breedsAPI[key].length > 0 ? 
-        breedsAPI[key].map(subBreed =>{
-          breedsArray.push({name: `${key} ${subBreed}`, breed: key, subBreed:subBreed, subBreeds: null, images: `${key}/${subBreed}`, isSubBreedOf: key})
-          return {name: `${key} ${subBreed}`, breed: key, subBreed:subBreed, subBreeds: null, images: `${key}/${subBreed}`, isSubBreedOf: key}
-        })
-        : 
-        null;
-        breedsArray.push({name: key, breed: key, subBreed:null, subBreeds: hasSubBreed, images: key, isSubBreedOf: null})
-      };
-      setBreedsApiArray(breeds)
+      }
+      return breeds
+    })
+    setBreedCollection(()=>{
+      let breedsArray = [];
+      breedsApiArray.forEach(breed => {
+          const hasSubBreed = breed.subBreeds.length > 0 ? 
+          breed.subBreeds.map(subBreed =>{
+            const subBreedObj = {
+              name: `${breed.breed} ${subBreed}`, 
+              breed: breed.breed, 
+              subBreed:subBreed, 
+              subBreeds: null, 
+              isSubBreedOf: breed.breed, 
+              images: `${breed.breed}/${subBreed}`, 
+            }
+            breedsArray.push(subBreedObj)
+            return subBreedObj
+          })
+          : 
+          null;
+          breedsArray.push({
+            name: breed.breed, 
+            breed: breed.breed, 
+            subBreed:null, 
+            subBreeds: hasSubBreed, 
+            isSubBreedOf: null, 
+            images: breed.breed, 
+          })
+      });
       return breedsArray
     })
-
-  }, [breedCollection, breedsAPI, breedsApiArray]);
+    console.log(breedsAPI)
+  }, [breedsAPI]);
   
+
   const modalProps = (breedParam, subBreedParam) =>{
-    axios(!!subBreedParam ? 
+    fetch(!!subBreedParam ? 
       `https://dog.ceo/api/breed/${breedParam}/${subBreedParam}/images`:
       `https://dog.ceo/api/breed/${breedParam}/images`
       )
-    .then((result) => {
-      setBreedImages(result.data.message);
-      setSelectedBreed(() => (!!subBreedParam ?
-        {breed: `${subBreedParam.toUpperCase()} ${breedParam.toUpperCase()}`} :
-        {breed: `${breedParam.toUpperCase()}` }))
+    .then(res => res.json())
+    .then((data) => {
+      setBreedImages(data.message);
+      setSelectedBreed(() => (!!subBreedParam ? `${subBreedParam.toUpperCase()} ${breedParam.toUpperCase()}` : `${breedParam.toUpperCase()}`))
     }).catch((err) => {
       console.log(err);
     });
@@ -83,17 +99,17 @@ const BreedList = () => {
   }
   
   const columns = [
-    {title: 'Name', dataIndex: 'name', },
-    {title: 'Breed', dataIndex: 'breed', },
     {
-      title: 'Sub-Breed', 
-      dataIndex: 'subBreeds',
-      
+      title: 'Breed', 
+      dataIndex: 'breedName',
+    },
+    {
+      title: 'Sub-Breed', dataIndex: 'subBreeds',
       render: (_, record) => (
-        <Space size="middle">
+        <Space size="middle" className='tag--container'>
           {!!record.subBreed ?
-            record.subBreed.map(subBreed =>
-              <Tag className='tag' key={subBreed} color={'geekblue'}>
+            record.subBreed.map((subBreed, i) =>
+              <Tag className='tag' key={subBreed + i} color={'geekblue'}>
                 <h3 onClick={()=>{handleClick(subBreed.breed, subBreed.subBreed)}}>
                   {`${subBreed.name.toUpperCase()}`}
                 </h3>
@@ -106,23 +122,19 @@ const BreedList = () => {
       )
     },
     {
-      title: 'View More', 
-      dataIndex: 'action', 
-      
+      title: 'Images', dataIndex: 'breed', 
       render: (_, record) => (
         <Space size="middle">
-          <h3 className='action' onClick={()=>{handleClick(record.breed)}}>More</h3>
+          <h3 className='action' onClick={()=>{handleClick(record.breed)}}>View all</h3>
         </Space>
     )
   },
 ]
 
-
 const filterBreeds = (checkedValues) => {
-  console.log(checkedValues)
-  const filteredArray = breedCollection.filter(item =>
-    checkedValues.some(checkedValue => item.breed.includes(checkedValue))
-    )
+  const filteredArray = breedCollection.filter(item =>{
+    return checkedValues.some(checkedValue => item.name.includes(checkedValue))
+  })
   setFilterBreedApi(filteredArray)
 };
   
@@ -131,60 +143,53 @@ const breedArray = filterBreedApi.length ? filterBreedApi : breedCollection;
 const data = breedArray.map((breedItem, i)=>{
   return {
     key: i,
-    name: breedItem.name.toUpperCase(),
-    breed: breedItem.breed,
+    breedName: breedItem.name.toUpperCase(),
+    breed: breedItem.name,
     subBreed: breedItem.subBreeds,
   }
 })
 
-const createCheckBox = (
-  <>
-    <div className='filter--title--container'><h3 className='filter--title'>Filter 🐶 By</h3></div>
-    <Checkbox.Group 
-      className='filter--checkbox'
-      onChange={filterBreeds} 
-    >
-      {breedsApiArray.map((breed) =>
-        <>
-          <Checkbox style={{'margin': '10px 0 10px 10px'}} value={breed.breed}>{breed.breed.toUpperCase()}</Checkbox>
-          {
-            breed.subBreeds.length ? breed.subBreeds.map(subBreed =>
-              <div style={{'margin': '10px 0 10px 30px'}}>
-                <Checkbox value={subBreed}>{subBreed.toUpperCase()} {breed.breed.toUpperCase()}</Checkbox>
-              </div>
-            )
-            :
-            <></>
-          }
-        </>
-      )}
-    </Checkbox.Group>
-  </>
-)
-
 return (
-  <div className='list'>
+  <div className='list' data-testid="listTest">
     {!!selectedBreed && 
-    <Modal 
-      breed={selectedBreed} 
-      breedImages={breedImages}
-      isModalOpen={isModalOpen}
-      loading={loading}
-      handleOk={()=>{
-        setIsModalOpen(false);
-      }} 
-      handleCancel={()=>{
-        setIsModalOpen(false);
-      }}
-    /> 
+      <Modal  breed={selectedBreed}  breedImages={breedImages} isModalOpen={isModalOpen} loading={loading}
+        handleOk={()=>{
+          setIsModalOpen(false);
+        }} 
+        handleCancel={()=>{
+          setIsModalOpen(false);
+        }}
+      /> 
     }
     <div className='list--container'>
       <div className='filter'>
-        {createCheckBox}
-      </div>
+        <div className='filter--title--container'><h3 className='filter--title'>Filter 🐶 By</h3></div>
+          <Checkbox.Group 
+            className='filter--checkbox'
+            onChange={filterBreeds} 
+          >
+            {breedsApiArray.map((breed) =>
+              <>
+                <Checkbox style={{'margin': '10px 0 10px 10px'}} value={breed.breed}>
+                  {breed.breed.toUpperCase()}
+                </Checkbox>
+                {
+                  breed.subBreeds.length ? breed.subBreeds.map(subBreed =>
+                    <div style={{'margin': '10px 0 10px 30px'}}>
+                      <Checkbox data-testid="CHECKBOX_ID" value={`${breed.breed} ${subBreed}`}>{subBreed.toUpperCase()} 
+                        {breed.breed.toUpperCase()}
+                      </Checkbox>
+                    </div>
+                  )
+                  :
+                  <></>
+                }
+              </>
+            )}
+          </Checkbox.Group>
+        </div>
       <div className='table'>
-        
-        <Table columns={columns} dataSource={data} bordered style={{'backgroundColor': 'volcano'}}/>
+        <Table size='small' columns={columns} dataSource={data} bordered style={{'backgroundColor': 'volcano'}}/>
       </div>
     </div>
   </div>
