@@ -32,38 +32,40 @@ const BreedList = () => {
         subBreeds: breedsAPI[key].length ? breedsAPI[key] : []
         })
       }
+      setBreedCollection(()=>{
+        let breedsArray = [];
+        breeds.forEach(breed => {
+            const hasSubBreed = breed.subBreeds.length > 0 ? 
+            breed.subBreeds.map(subBreed =>{
+              const subBreedObj = {
+                name: `${breed.breed} ${subBreed}`, 
+                breed: breed.breed, 
+                subBreed:subBreed, 
+                subBreeds: null, 
+                isSubBreedOf: breed.breed, 
+                images: `${breed.breed}/${subBreed}`, 
+              }
+              breedsArray.push(subBreedObj)
+              return subBreedObj
+            })
+            : 
+            null;
+            breedsArray.push({
+              name: breed.breed, 
+              breed: breed.breed, 
+              subBreed:null, 
+              subBreeds: hasSubBreed, 
+              isSubBreedOf: null, 
+              images: breed.breed, 
+            })
+        });
+        return breedsArray
+      })
       return breeds
     })
-    setBreedCollection(()=>{
-      let breedsArray = [];
-      breedsApiArray.forEach(breed => {
-          const hasSubBreed = breed.subBreeds.length > 0 ? 
-          breed.subBreeds.map(subBreed =>{
-            const subBreedObj = {
-              name: `${breed.breed} ${subBreed}`, 
-              breed: breed.breed, 
-              subBreed:subBreed, 
-              subBreeds: null, 
-              isSubBreedOf: breed.breed, 
-              images: `${breed.breed}/${subBreed}`, 
-            }
-            breedsArray.push(subBreedObj)
-            return subBreedObj
-          })
-          : 
-          null;
-          breedsArray.push({
-            name: breed.breed, 
-            breed: breed.breed, 
-            subBreed:null, 
-            subBreeds: hasSubBreed, 
-            isSubBreedOf: null, 
-            images: breed.breed, 
-          })
-      });
-      return breedsArray
-    })
     console.log(breedsAPI)
+    console.log(breedsApiArray)
+    console.log(breedCollection)
   }, [breedsAPI]);
   
 
