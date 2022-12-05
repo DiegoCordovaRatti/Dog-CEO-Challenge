@@ -1,3 +1,30 @@
+# Dog CEO Challenge
+
+## Functionalities
+-  [x]  Search dog breeds
+-  [x]  Filter breeds and sub breeds simultaneously 
+-  [x]  Display every breeds and sub breeds images
+
+## Future functionalities
+-  [x]  Search bar
+-  [x]  Random dogs info
+
+## How was it built:
+<p align=center>
+    <img src = "https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
+    <img src = "https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white"/>
+    <img src = "https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+    <img src = "https://img.shields.io/badge/-AntDesign-%230170FE?style=for-the-badge&logo=ant-design&logoColor=white)"/>
+    <img src = "https://img.shields.io/badge/Firebase-%2335495e?style=for-the-badge&logo=Firebase&logoColor=white"/>
+</p>
+The APP was built using the following technologies:
+
+-  [x]  JavaScript
+-  [x]  React
+-  [x]  React Router
+-  [x]  Google Firebase
+-  [x]  AntDesign
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
