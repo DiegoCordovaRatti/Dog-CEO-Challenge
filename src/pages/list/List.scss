@@ -9,6 +9,14 @@
 
 .list--container{
     display: flex;
+    .filter{
+        .filter--checkbox{
+            .arrow-icon{
+                transform: rotateY(180deg);
+                margin-right: 5px;
+            }
+        }
+    }
     .table{
         .tag--container{
             display: grid;

@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import { Table, Space, Tag, Checkbox } from 'antd';
+import { EnterOutlined } from '@ant-design/icons';
 import Modal from '../../components/modal/Modal'
 import './List.scss'
 
@@ -17,8 +18,12 @@ const BreedList = () => {
   // API call & asign the response to a state variable
   useEffect(() => {
     const fetchApiCall = async() =>{
-      const { message } = await fetch('https://dog.ceo/api/breeds/list/all').then(response => response.json());
-      setBreedsAPI(message)
+      try {
+        const { message } = await fetch('https://dog.ceo/api/breeds/list/all').then(response => response.json());
+        setBreedsAPI(message)
+      } catch (error) {
+        console.log(error)
+      }
     }
     fetchApiCall()
   }, []);
@@ -63,9 +68,6 @@ const BreedList = () => {
       })
       return breeds
     })
-    console.log(breedsAPI)
-    console.log(breedsApiArray)
-    console.log(breedCollection)
   }, [breedsAPI]);
   
 
@@ -100,7 +102,7 @@ const BreedList = () => {
     handleLoading();
   }
   
-  const columns = [
+  const tableColumns = [
     {
       title: 'Breed', 
       dataIndex: 'breedName',
@@ -142,7 +144,7 @@ const filterBreeds = (checkedValues) => {
   
 const breedArray = filterBreedApi.length ? filterBreedApi : breedCollection;
 
-const data = breedArray.map((breedItem, i)=>{
+const tableData = breedArray.map((breedItem, i)=>{
   return {
     key: i,
     breedName: breedItem.name.toUpperCase(),
@@ -150,7 +152,6 @@ const data = breedArray.map((breedItem, i)=>{
     subBreed: breedItem.subBreeds,
   }
 })
-
 return (
   <div className='list' data-testid="listTest">
     {!!selectedBreed && 
@@ -177,9 +178,10 @@ return (
                 </Checkbox>
                 {
                   breed.subBreeds.length ? breed.subBreeds.map(subBreed =>
-                    <div style={{'margin': '10px 0 10px 30px'}}>
-                      <Checkbox data-testid="CHECKBOX_ID" value={`${breed.breed} ${subBreed}`}>{subBreed.toUpperCase()} 
-                        {breed.breed.toUpperCase()}
+                    <div style={{'margin': '10px 0 10px 20px', display: 'flex'}}>
+                      <EnterOutlined className='arrow-icon'/>
+                      <Checkbox data-testid="CHECKBOX_ID" value={`${breed.breed} ${subBreed}`}>
+                        {`${subBreed.toUpperCase()} ${breed.breed.toUpperCase()}`}
                       </Checkbox>
                     </div>
                   )
@@ -191,12 +193,10 @@ return (
           </Checkbox.Group>
         </div>
       <div className='table'>
-        <Table size='small' columns={columns} dataSource={data} bordered style={{'backgroundColor': 'volcano'}}/>
+        <Table size='small' columns={tableColumns} dataSource={tableData} bordered />
       </div>
     </div>
   </div>
   )
 }
-
 export default BreedList
-
